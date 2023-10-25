@@ -1,9 +1,9 @@
-import { StackActions } from "@react-navigation/compat";
-import * as E from "fp-ts/lib/Either";
 import * as pot from "@pagopa/ts-commons/lib/pot";
-import { call, put, select, take, race } from "typed-redux-saga/macro";
-import { ActionType } from "typesafe-actions";
+import { StackActions } from "@react-navigation/native";
+import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
+import { call, put, race, select, take } from "typed-redux-saga/macro";
+import { ActionType } from "typesafe-actions";
 import NavigationService from "../../../../../../navigation/NavigationService";
 import { navigateBack } from "../../../../../../store/actions/navigation";
 import { fetchWalletsRequest } from "../../../../../../store/actions/wallet/wallets";

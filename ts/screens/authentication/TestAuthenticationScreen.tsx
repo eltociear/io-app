@@ -1,34 +1,34 @@
+import {
+  Alert,
+  ContentWrapper,
+  IOColors,
+  VSpacer
+} from "@pagopa/io-app-design-system";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { useNavigation } from "@react-navigation/native";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as React from "react";
-import { SafeAreaView, View, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { connect } from "react-redux";
-import { NavigationEvents } from "@react-navigation/compat";
-import {
-  IOColors,
-  VSpacer,
-  ContentWrapper,
-  Alert
-} from "@pagopa/io-app-design-system";
 import { PasswordLogin } from "../../../definitions/backend/PasswordLogin";
 import { LabelledItem } from "../../components/LabelledItem";
+import { Body } from "../../components/core/typography/Body";
+import { IOStyles } from "../../components/core/variables/IOStyles";
 import BaseScreenComponent from "../../components/screens/BaseScreenComponent";
+import ActivityIndicator from "../../components/ui/ActivityIndicator";
 import { BlockButtonProps } from "../../components/ui/BlockButtons";
 import FooterWithButtons from "../../components/ui/FooterWithButtons";
 import I18n from "../../i18n";
-import { Dispatch } from "../../store/actions/types";
-import { Body } from "../../components/core/typography/Body";
-import { getAppVersion } from "../../utils/appVersion";
-import { IOStyles } from "../../components/core/variables/IOStyles";
-import { useIOSelector } from "../../store/hooks";
-import { testLoginSelector } from "../../store/reducers/testLogin";
-import ActivityIndicator from "../../components/ui/ActivityIndicator";
 import {
   testLoginCleanUp,
   testLoginRequest
 } from "../../store/actions/authentication";
+import { Dispatch } from "../../store/actions/types";
+import { useIOSelector } from "../../store/hooks";
+import { testLoginSelector } from "../../store/reducers/testLogin";
+import { getAppVersion } from "../../utils/appVersion";
 
 const styles = StyleSheet.create({
   appVersion: { ...IOStyles.flex, ...IOStyles.rowSpaceBetween }
@@ -110,6 +110,7 @@ const TestAuthenticationScreen = (props: Props) => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+  const navigation = useNavigation();
   const loginState = useIOSelector(testLoginSelector);
   const isLoading = loginState.kind === "requested";
   const isError = loginState.kind === "failed";
@@ -128,9 +129,9 @@ const TestAuthenticationScreen = (props: Props) => {
     testID: "confirmButton"
   };
 
+  navigation.addListener("blur", props.cleanUpLogin);
   return (
     <BaseScreenComponent goBack={true} headerTitle={"Test login"}>
-      <NavigationEvents onWillBlur={props.cleanUpLogin} />
       <SafeAreaView style={IOStyles.flex}>
         <ScrollView>
           <ContentWrapper>

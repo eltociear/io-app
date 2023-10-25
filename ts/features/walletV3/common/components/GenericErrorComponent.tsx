@@ -1,21 +1,21 @@
-import { NavigationEvents } from "@react-navigation/compat";
-import { pipe } from "fp-ts/lib/function";
-import * as O from "fp-ts/lib/Option";
+import { IOPictograms, Pictogram, VSpacer } from "@pagopa/io-app-design-system";
+import { useNavigation } from "@react-navigation/native";
 import * as A from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import * as t from "io-ts";
 import * as React from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { VSpacer, IOPictograms, Pictogram } from "@pagopa/io-app-design-system";
 import { Body } from "../../../../components/core/typography/Body";
-import { setAccessibilityFocus } from "../../../../utils/accessibility";
 import { H2 } from "../../../../components/core/typography/H2";
-import themeVariables from "../../../../theme/variables";
-import I18n from "../../../../i18n";
 import { IOStyles } from "../../../../components/core/variables/IOStyles";
-import { WithTestID } from "../../../../types/WithTestID";
-import { FooterStackButton } from "../../../bonus/bonusVacanze/components/buttons/FooterStackButtons";
 import { BlockButtonProps } from "../../../../components/ui/BlockButtons";
+import I18n from "../../../../i18n";
+import themeVariables from "../../../../theme/variables";
+import { WithTestID } from "../../../../types/WithTestID";
+import { setAccessibilityFocus } from "../../../../utils/accessibility";
+import { FooterStackButton } from "../../../bonus/bonusVacanze/components/buttons/FooterStackButtons";
 
 type GenericErrorComponentProps = WithTestID<{
   title: string;
@@ -65,6 +65,7 @@ export const GenericErrorComponent = ({
   onClose
 }: GenericErrorComponentProps) => {
   const elementRef = React.createRef<Text>();
+  const navigation = useNavigation();
 
   const retryButtonProps: BlockButtonProps = {
     testID: "WalletOnboardingRetryButtonTestID",
@@ -89,12 +90,13 @@ export const GenericErrorComponent = ({
       buttons => (A.isEmpty(buttons) ? [closeButtonProps] : buttons)
     );
 
+  navigation.addListener("focus", () => {
+    setAccessibilityFocus(elementRef);
+  });
+
   return (
     <SafeAreaView style={IOStyles.flex} testID={testID}>
       <View style={styles.main} testID="GenericErrorComponent">
-        <NavigationEvents
-          onWillFocus={() => setAccessibilityFocus(elementRef)}
-        />
         <Pictogram name={pictogram} />
         <VSpacer size={24} />
         <H2

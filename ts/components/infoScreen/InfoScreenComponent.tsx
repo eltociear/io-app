@@ -1,7 +1,7 @@
-import { NavigationEvents } from "@react-navigation/compat";
+import { VSpacer } from "@pagopa/io-app-design-system";
+import { useNavigation } from "@react-navigation/native";
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { VSpacer } from "@pagopa/io-app-design-system";
 import themeVariables from "../../theme/variables";
 import { setAccessibilityFocus } from "../../utils/accessibility";
 import { Body } from "../core/typography/Body";
@@ -46,9 +46,12 @@ const renderNode = (body: string | React.ReactNode) => {
 export const InfoScreenComponent: React.FunctionComponent<Props> = props => {
   const elementRef = React.createRef<Text>();
 
+  const navigation = useNavigation();
+  navigation.addListener("focus", () => {
+    setAccessibilityFocus(elementRef);
+  });
   return (
     <View style={styles.main} testID="InfoScreenComponent">
-      <NavigationEvents onWillFocus={() => setAccessibilityFocus(elementRef)} />
       {props.image}
       <VSpacer size={24} />
       <H2

@@ -1,11 +1,12 @@
-import { NavigationEvents } from "@react-navigation/compat";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 
+import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
 import RemindEmailValidationOverlay from "../../components/RemindEmailValidationOverlay";
+import { isNewCduFlow } from "../../config";
 import {
   AppParamsList,
   IOStackNavigationRouteProps
@@ -15,9 +16,8 @@ import { Dispatch } from "../../store/actions/types";
 import { emailValidationSelector } from "../../store/reducers/emailValidation";
 import { isProfileEmailValidatedSelector } from "../../store/reducers/profile";
 import { GlobalState } from "../../store/reducers/types";
-import { LightModalContextInterface } from "../ui/LightModal";
 import NewRemindEmailValidationOverlay from "../NewRemindEmailValidationOverlay";
-import { isNewCduFlow } from "../../config";
+import { LightModalContextInterface } from "../ui/LightModal";
 import { withConditionalView } from "./withConditionalView";
 import { withLightModalContext } from "./withLightModalContext";
 
@@ -32,45 +32,40 @@ export type ModalProps = LightModalContextInterface &
     - ModalRemindEmailValidationOverlay is unmounted
     - A navigation request is made (eg navigationBack) and the onWillBlur listener is activated
       */
-class ModalRemindEmailValidationOverlay extends React.Component<ModalProps> {
-  constructor(props: ModalProps) {
-    super(props);
-  }
-  public componentWillUnmount() {
-    if (!isNewCduFlow) {
-      this.hideModal();
-    }
-  }
-
-  private hideModal = () => {
-    this.props.hideModal();
+const ModalRemindEmailValidationOverlay = (props: {
+  hideModal: () => void;
+  dispatchAcknowledgeOnEmailValidation: () => void;
+  showModal: (arg0: JSX.Element) => void;
+}) => {
+  useEffect(
+    () => () => {
+      if (!isNewCduFlow) {
+        props.hideModal();
+      }
+    },
+    [props]
+  );
+  const hideModal = () => {
+    props.hideModal();
     // when the reminder modal will be closed
     // we set acknowledgeOnEmailValidation to none because we don't want
     // any feedback about the email validation
     // remember that only RemindEmailValidationOverlay sets it to some, because there
     // we want the user feedback
-    this.props.dispatchAcknowledgeOnEmailValidation();
+    props.dispatchAcknowledgeOnEmailValidation();
   };
+  const navigation = useNavigation();
+  navigation.addListener("blur", hideModal);
+  navigation.addListener("focus", () => {
+    if (isNewCduFlow) {
+      props.showModal(<NewRemindEmailValidationOverlay />);
+    } else {
+      props.showModal(<RemindEmailValidationOverlay />);
+    }
+  });
 
-  public render() {
-    return (
-      <View>
-        <NavigationEvents
-          onWillBlur={() => {
-            this.hideModal();
-          }}
-          onWillFocus={() => {
-            if (isNewCduFlow) {
-              this.props.showModal(<NewRemindEmailValidationOverlay />);
-            } else {
-              this.props.showModal(<RemindEmailValidationOverlay />);
-            }
-          }}
-        />
-      </View>
-    );
-  }
-}
+  return <View></View>;
+};
 
 const ConditionalView = withLightModalContext(
   ModalRemindEmailValidationOverlay

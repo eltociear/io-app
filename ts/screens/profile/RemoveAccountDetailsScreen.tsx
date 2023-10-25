@@ -1,10 +1,11 @@
 import * as pot from "@pagopa/ts-commons/lib/pot";
-import { StackActions } from "@react-navigation/compat";
+import { StackActions } from "@react-navigation/native";
 import { Content } from "native-base";
 import * as React from "react";
-import { View, Alert, SafeAreaView } from "react-native";
+import { Alert, SafeAreaView, View } from "react-native";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { LabelledItem } from "../../components/LabelledItem";
 import {
   RadioButtonList,
   RadioItem
@@ -12,7 +13,6 @@ import {
 import { H1 } from "../../components/core/typography/H1";
 import { H4 } from "../../components/core/typography/H4";
 import { IOStyles } from "../../components/core/variables/IOStyles";
-import { LabelledItem } from "../../components/LabelledItem";
 import BaseScreenComponent from "../../components/screens/BaseScreenComponent";
 import FooterWithButtons from "../../components/ui/FooterWithButtons";
 import { shufflePinPadOnPayment } from "../../config";
@@ -25,9 +25,9 @@ import NavigationService from "../../navigation/NavigationService";
 import { identificationRequest } from "../../store/actions/identification";
 import { navigateToWalletHome } from "../../store/actions/navigation";
 import {
-  removeAccountMotivation,
   RemoveAccountMotivationEnum,
-  RemoveAccountMotivationPayload
+  RemoveAccountMotivationPayload,
+  removeAccountMotivation
 } from "../../store/actions/profile";
 import { ReduxProps } from "../../store/actions/types";
 import { GlobalState } from "../../store/reducers/types";

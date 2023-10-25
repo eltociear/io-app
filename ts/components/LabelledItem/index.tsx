@@ -9,7 +9,8 @@
  * icon  |
  *       input
  */
-import { NavigationEvents } from "@react-navigation/compat";
+import { IOColors, IOIcons } from "@pagopa/io-app-design-system";
+import { useNavigation } from "@react-navigation/native";
 import color from "color";
 import { Input as InputNativeBase, Item } from "native-base";
 import * as React from "react";
@@ -24,10 +25,8 @@ import {
   View
 } from "react-native";
 import { TextInputMaskProps } from "react-native-masked-text";
-import { IOColors, IOIcons } from "@pagopa/io-app-design-system";
 import I18n from "../../i18n";
 import { WithTestID } from "../../types/WithTestID";
-
 import { isStringNullyOrEmpty } from "../../utils/strings";
 import { makeFontStyleObject } from "../core/fonts";
 import { H5 } from "../core/typography/H5";
@@ -126,6 +125,11 @@ export const LabelledItem: React.FC<Props> = ({
 }: Props) => {
   const [isEmpty, setIsEmpty] = useState(true);
   const [hasFocus, setHasFocus] = useState(false);
+  const navigation = useNavigation();
+
+  if (props.hasNavigationEvents && props.onPress) {
+    navigation.addListener("blur", props.onPress);
+  }
 
   const accessibilityLabel = props.accessibilityLabel ?? "";
 
@@ -183,10 +187,6 @@ export const LabelledItem: React.FC<Props> = ({
           }}
           testID="Item"
         >
-          {props.hasNavigationEvents && props.onPress && (
-            <NavigationEvents onWillBlur={props.onPress} />
-          )}
-
           {/* Icon OR Image. They can't be managed separately because
           credit card sorting have a fallback value that's an icon,
           not an image */}
