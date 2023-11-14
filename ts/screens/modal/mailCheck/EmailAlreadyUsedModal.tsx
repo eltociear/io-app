@@ -1,6 +1,7 @@
 import * as React from "react";
 import { View, SafeAreaView, StyleSheet, Modal } from "react-native";
 import { Pictogram, VSpacer } from "@pagopa/io-app-design-system";
+import { useNavigation } from "@react-navigation/native";
 import I18n from "../../../i18n";
 import { Body } from "../../../components/core/typography/Body";
 import { H3 } from "../../../components/core/typography/H3";
@@ -8,6 +9,7 @@ import { IOStyles } from "../../../components/core/variables/IOStyles";
 import themeVariables from "../../../theme/variables";
 import { useAvoidHardwareBackButton } from "../../../utils/useAvoidHardwareBackButton";
 import FooterWithButtons from "../../../components/ui/FooterWithButtons";
+import ROUTES from "../../../navigation/routes";
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -27,10 +29,13 @@ export type Props = {
 
 const EmailAlreadyUsedModal = (props: Props) => {
   useAvoidHardwareBackButton();
+  const navigation = useNavigation();
 
   const continueButtonProps = {
-    // TODO: Jira ticket IOPID-689. Add new logic.
-    onPress: () => undefined,
+    onPress: () =>
+      navigation.navigate(ROUTES.PROFILE_NAVIGATOR, {
+        screen: ROUTES.INSERT_EMAIL_SCREEN
+      }),
     title: I18n.t("email.cduModal.editMail.editButton"),
     block: true
   };
