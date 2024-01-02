@@ -17,7 +17,7 @@ import {
 import { mockIDPayClient } from "../../../common/api/__mocks__/client";
 import { OnboardingFailureEnum } from "../../types/OnboardingFailure";
 import { Context } from "../machine";
-import { createServicesImplementation } from "../services";
+import { createServicesImplementation } from "../actors";
 import { InitiativeDataDTO } from "../../../../../../definitions/idpay/InitiativeDataDTO";
 import {
   AuthorityEnum,

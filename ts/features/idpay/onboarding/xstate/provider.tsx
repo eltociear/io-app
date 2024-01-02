@@ -1,9 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
-import { useInterpret } from "@xstate/react";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import React from "react";
-import { InterpreterFrom } from "xstate";
+import { InterpreterFrom, createActor } from "xstate";
 import {
   idPayApiBaseUrl,
   idPayApiUatBaseUrl,
@@ -23,18 +22,12 @@ import {
   fromLocaleToPreferredLanguage,
   getLocalePrimaryWithFallback
 } from "../../../../utils/locale";
-import { useXStateMachine } from "../../../../xstate/hooks/useXStateMachine";
 import { createIDPayClient } from "../../common/api/client";
-import {
-  IDPayOnboardingParamsList,
-  IDPayOnboardingStackNavigationProp
-} from "../navigation/navigator";
+import { IDPayOnboardingStackNavigationProp } from "../navigation/navigator";
+import { IdPayOnboardingParamsList } from "../navigation/params";
 import { createActionsImplementation } from "./actions";
-import {
-  IDPayOnboardingMachineType,
-  createIDPayOnboardingMachine
-} from "./machine";
-import { createServicesImplementation } from "./services";
+import { createActorsImplementation } from "./actors";
+import { IDPayOnboardingMachineType, idPayOnboardingMachine } from "./machine";
 
 type OnboardingMachineContext = InterpreterFrom<IDPayOnboardingMachineType>;
 
@@ -44,29 +37,21 @@ const OnboardingMachineContext = React.createContext<OnboardingMachineContext>(
 
 type Props = {
   children: React.ReactNode;
+  serviceId: string;
 };
 
 const IDPayOnboardingMachineProvider = (props: Props) => {
   const dispatch = useIODispatch();
-  const [machine] = useXStateMachine(createIDPayOnboardingMachine);
-  const isPagoPATestEnabled = useIOSelector(isPagoPATestEnabledSelector);
-  const baseUrl = isPagoPATestEnabled ? idPayApiUatBaseUrl : idPayApiBaseUrl;
-
-  const sessionInfo = useIOSelector(sessionInfoSelector);
-
   const rootNavigation = useNavigation<IOStackNavigationProp<AppParamsList>>();
   const onboardingNavigation =
     useNavigation<
-      IDPayOnboardingStackNavigationProp<IDPayOnboardingParamsList>
+      IDPayOnboardingStackNavigationProp<IdPayOnboardingParamsList>
     >();
 
+  const sessionInfo = useIOSelector(sessionInfoSelector);
   if (O.isNone(sessionInfo)) {
     throw new Error("Session info is undefined");
   }
-
-  const { bpdToken } = sessionInfo.value;
-
-  const token = idPayTestToken !== undefined ? idPayTestToken : bpdToken;
 
   const language = pipe(
     useIOSelector(preferredLanguageSelector),
@@ -74,23 +59,33 @@ const IDPayOnboardingMachineProvider = (props: Props) => {
     fromLocaleToPreferredLanguage
   );
 
+  const isPagoPATestEnabled = useIOSelector(isPagoPATestEnabledSelector);
+  const baseUrl = isPagoPATestEnabled ? idPayApiUatBaseUrl : idPayApiBaseUrl;
   const client = createIDPayClient(baseUrl);
 
-  const services = createServicesImplementation(client, token, language);
+  const { bpdToken } = sessionInfo.value;
+  const token = idPayTestToken !== undefined ? idPayTestToken : bpdToken;
 
+  const actors = createActorsImplementation(client, token, language);
   const actions = createActionsImplementation(
     rootNavigation,
     onboardingNavigation,
     dispatch
   );
 
-  const machineService = useInterpret(machine, {
-    services,
-    actions
+  const onboardingMachine = idPayOnboardingMachine.provide({
+    actions,
+    actors
+  });
+
+  const onboardingMachineService = createActor(onboardingMachine, {
+    input: {
+      serviceId: props.serviceId
+    }
   });
 
   return (
-    <OnboardingMachineContext.Provider value={machineService}>
+    <OnboardingMachineContext.Provider value={onboardingMachineService}>
       {props.children}
     </OnboardingMachineContext.Provider>
   );

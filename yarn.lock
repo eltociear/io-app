@@ -4425,12 +4425,12 @@
   resolved "https://registry.yarnpkg.com/@xstate/machine-extractor/-/machine-extractor-0.7.1.tgz#157d5083db3f116b7ae28b5b3aef8f457f052491"
   integrity sha512-dQEt6enmHXtD93vDcMefhb5bh1zh0mLCRT8CvYJjCpTjaTth7sXqlU6ri1qP0HDR6IbU9s2/WVNw7Oy7O/Sqfg==
 
-"@xstate/react@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@xstate/react/-/react-3.0.1.tgz#937eeb5d5d61734ab756ca40146f84a6fe977095"
-  integrity sha512-/tq/gg92P9ke8J+yDNDBv5/PAxBvXJf2cYyGDByzgtl5wKaxKxzDT82Gj3eWlCJXkrBg4J5/V47//gRJuVH2fA==
+"@xstate/react@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@xstate/react/-/react-4.0.1.tgz#a5cec511e23e44ac5dd64852a1497efb6434c3f0"
+  integrity sha512-UB9qUC11wcaYd05wGea0mvEA3uTHikNaB4InMZfxD7MVFxzBFU+3JFkemjiN8bDdPJfDrObyP9ZPDVojq2LytA==
   dependencies:
-    use-isomorphic-layout-effect "^1.0.0"
+    use-isomorphic-layout-effect "^1.1.2"
     use-sync-external-store "^1.0.0"
 
 "@xstate/tools-shared@1.2.3":
@@ -17531,7 +17531,7 @@ url-parse@^1.5.9:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-use-isomorphic-layout-effect@^1.0.0:
+use-isomorphic-layout-effect@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/use-isomorphic-layout-effect/-/use-isomorphic-layout-effect-1.1.2.tgz#497cefb13d863d687b08477d9e5a164ad8c1a6fb"
   integrity sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==
@@ -17993,10 +17993,15 @@ xss@1.0.10:
     commander "^2.20.3"
     cssfilter "0.0.10"
 
-xstate@^4.29.0, xstate@^4.33.6:
+xstate@^4.29.0:
   version "4.35.4"
   resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.35.4.tgz#87b2a45b6c7e84d820f56378408c6531ca5c4662"
   integrity sha512-mqRBYHhljP1xIItI4xnSQNHEv6CKslSM1cOGmvhmxeoDPAZgNbhSUYAL5N6DZIxRfpYY+M+bSm3mUFHD63iuvg==
+
+xstate@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/xstate/-/xstate-5.3.1.tgz#690d001cd5cd72d1d9a10e26da8b31cd64887482"
+  integrity sha512-j4lYbMKqTQ1gxS0NAhjX0JkFJ44OLqYgXV7kVSc0YpnENhPNigvrFMqpBFtfho39pgzdcmpmnmUyEUVWwYMOdA==
 
 xtend@^4.0.0, xtend@~4.0.1:
   version "4.0.2"

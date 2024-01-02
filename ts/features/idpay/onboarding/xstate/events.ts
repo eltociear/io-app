@@ -38,7 +38,7 @@ type E_SELECT_MULTI_CONSENT = {
   data: SelfConsentMultiDTO;
 };
 
-export type Events =
+export type IdPayOnboardingMachineEvents =
   | E_SELECT_INITIATIVE
   | E_ACCEPT_TOS
   | E_ACCEPT_REQUIRED_PDND_CRITERIA

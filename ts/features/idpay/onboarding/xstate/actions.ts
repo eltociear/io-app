@@ -6,21 +6,21 @@ import { useIODispatch } from "../../../../store/hooks";
 import { guardedNavigationAction } from "../../../../xstate/helpers/guardedNavigationAction";
 import { refreshSessionToken } from "../../../fastLogin/store/actions/tokenRefreshActions";
 import { IDPayDetailsRoutes } from "../../details/navigation";
-import {
-  IDPayOnboardingParamsList,
-  IDPayOnboardingRoutes,
-  IDPayOnboardingStackNavigationProp
-} from "../navigation/navigator";
-import { Context } from "./machine";
+import { IDPayOnboardingStackNavigationProp } from "../navigation/navigator";
+import { IdPayOnboardingParamsList } from "../navigation/params";
+import { IdPayOnboardingRoutes } from "../navigation/routes";
+import { IdPayOnboardingMachineContext } from "./context";
+
+type OnboardingMachineActions = {};
 
 const createActionsImplementation = (
   rootNavigation: IOStackNavigationProp<AppParamsList, keyof AppParamsList>,
   onboardingNavigation: IDPayOnboardingStackNavigationProp<
-    IDPayOnboardingParamsList,
-    keyof IDPayOnboardingParamsList
+    IdPayOnboardingParamsList,
+    keyof IdPayOnboardingParamsList
   >,
   dispatch: ReturnType<typeof useIODispatch>
-) => {
+): Partial<OnboardingMachineActions> => {
   const handleSessionExpired = () => {
     dispatch(
       refreshSessionToken.request({
@@ -32,52 +32,51 @@ const createActionsImplementation = (
   };
 
   const navigateToInitiativeDetailsScreen = guardedNavigationAction(
-    (context: Context) => {
+    (context: IdPayOnboardingMachineContext) => {
       if (context.serviceId === undefined) {
         throw new Error("serviceId is undefined");
       }
       onboardingNavigation.navigate(
-        IDPayOnboardingRoutes.IDPAY_ONBOARDING_INITIATIVE_DETAILS,
-        {
-          serviceId: context.serviceId
-        }
+        IdPayOnboardingRoutes.IDPAY_ONBOARDING_INITIATIVE_DETAILS
       );
     }
   );
 
   const navigateToPDNDCriteriaScreen = guardedNavigationAction(() =>
     onboardingNavigation.navigate(
-      IDPayOnboardingRoutes.IDPAY_ONBOARDING_PDNDACCEPTANCE
+      IdPayOnboardingRoutes.IDPAY_ONBOARDING_PDNDACCEPTANCE
     )
   );
 
   const navigateToBoolSelfDeclarationsScreen = guardedNavigationAction(() =>
     onboardingNavigation.navigate(
-      IDPayOnboardingRoutes.IDPAY_ONBOARDING_BOOL_SELF_DECLARATIONS
+      IdPayOnboardingRoutes.IDPAY_ONBOARDING_BOOL_SELF_DECLARATIONS
     )
   );
 
   const navigateToMultiSelfDeclarationsScreen = guardedNavigationAction(
-    (context: Context) =>
+    (context: IdPayOnboardingMachineContext) =>
       onboardingNavigation.navigate({
-        name: IDPayOnboardingRoutes.IDPAY_ONBOARDING_MULTI_SELF_DECLARATIONS,
+        name: IdPayOnboardingRoutes.IDPAY_ONBOARDING_MULTI_SELF_DECLARATIONS,
         key: String(context.multiConsentsPage)
       })
   );
 
   const navigateToCompletionScreen = () => {
     onboardingNavigation.navigate(
-      IDPayOnboardingRoutes.IDPAY_ONBOARDING_COMPLETION
+      IdPayOnboardingRoutes.IDPAY_ONBOARDING_COMPLETION
     );
   };
 
   const navigateToFailureScreen = () => {
     onboardingNavigation.navigate(
-      IDPayOnboardingRoutes.IDPAY_ONBOARDING_FAILURE
+      IdPayOnboardingRoutes.IDPAY_ONBOARDING_FAILURE
     );
   };
 
-  const navigateToInitiativeMonitoringScreen = (context: Context) => {
+  const navigateToInitiativeMonitoringScreen = (
+    context: IdPayOnboardingMachineContext
+  ) => {
     if (context.initiative === undefined) {
       throw new Error("initiative is undefined");
     }

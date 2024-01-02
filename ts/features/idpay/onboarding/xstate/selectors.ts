@@ -8,7 +8,8 @@ import { SelfDeclarationBoolDTO } from "../../../../../definitions/idpay/SelfDec
 import { SelfDeclarationDTO } from "../../../../../definitions/idpay/SelfDeclarationDTO";
 import { SelfDeclarationMultiDTO } from "../../../../../definitions/idpay/SelfDeclarationMultiDTO";
 import { LOADING_TAG, UPSERTING_TAG } from "../../../../xstate/utils";
-import { Context, IDPayOnboardingMachineType } from "./machine";
+import { IDPayOnboardingMachineType } from "./machine";
+import { IdPayOnboardingMachineContext } from "./context";
 
 type StateWithContext = StateFrom<IDPayOnboardingMachineType>;
 
@@ -111,13 +112,17 @@ const initiativeIDSelector = createSelector(
   initiative => initiative?.initiativeId ?? undefined
 );
 
-const getMultiRequiredCriteriaFromContext = (context: Context) =>
+const getMultiRequiredCriteriaFromContext = (
+  context: IdPayOnboardingMachineContext
+) =>
   filterCriteria<SelfDeclarationMultiDTO>(
     context.requiredCriteria,
     SelfDeclarationMultiDTO
   );
 
-const getBoolRequiredCriteriaFromContext = (context: Context) =>
+const getBoolRequiredCriteriaFromContext = (
+  context: IdPayOnboardingMachineContext
+) =>
   filterCriteria<SelfDeclarationBoolDTO>(
     context.requiredCriteria,
     SelfDeclarationBoolDTO
