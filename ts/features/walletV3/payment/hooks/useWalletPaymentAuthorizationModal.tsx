@@ -1,12 +1,11 @@
-import { openAuthenticationSession } from "@pagopa/io-react-native-login-utils";
 import * as pot from "@pagopa/ts-commons/lib/pot";
+import * as WebBrowser from "expo-web-browser";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 import * as React from "react";
 import URLParse from "url-parse";
 import { useIODispatch, useIOSelector } from "../../../../store/hooks";
-import { WALLET_WEBVIEW_OUTCOME_SCHEMA } from "../../common/utils/const";
 import {
   WalletPaymentAuthorizePayload,
   walletPaymentAuthorization
@@ -67,10 +66,11 @@ export const useWalletPaymentAuthorizationModal = ({
         TE.tryCatch(
           () => {
             setIsPendingAuthorization(true);
-            return openAuthenticationSession(
-              url,
-              WALLET_WEBVIEW_OUTCOME_SCHEMA
-            );
+
+            return WebBrowser.openAuthSessionAsync(url, "", {
+              showTitle: false,
+              createTask: true
+            });
           },
           () => {
             dispatch(walletPaymentAuthorization.cancel());
@@ -78,7 +78,15 @@ export const useWalletPaymentAuthorizationModal = ({
           }
         )
       ),
-      TE.map(handleAuthorizationResult)
+      TE.map(result => {
+        if (result.type === "success") {
+          handleAuthorizationResult(result.url);
+        } else if (result.type === WebBrowser.WebBrowserResultType.DISMISS) {
+          dispatch(walletPaymentAuthorization.cancel());
+          setIsPendingAuthorization(false);
+        }
+      })
+      // TE.map(handleAuthorizationResult)
     )();
   }, [
     isError,

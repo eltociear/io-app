@@ -1,4 +1,5 @@
 package it.pagopa.io.app;
+import expo.modules.ReactActivityDelegateWrapper;
 
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -53,4 +54,11 @@ public class MainActivity extends ReactActivity {
             return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
         }
     }
+
+  @Override
+  protected ReactActivityDelegate createReactActivityDelegate() {
+    return new ReactActivityDelegateWrapper(this, BuildConfig.IS_NEW_ARCHITECTURE_ENABLED,
+      new ReactActivityDelegate(this, getMainComponentName())
+    );
+  }
 }
