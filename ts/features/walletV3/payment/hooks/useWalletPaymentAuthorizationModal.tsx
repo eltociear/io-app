@@ -18,6 +18,7 @@ import {
 
 type Props = {
   onAuthorizationOutcome: (outcome: WalletPaymentOutcome) => void;
+  onDismiss: () => void;
 };
 
 export type WalletPaymentAuthorizationModal = {
@@ -28,7 +29,8 @@ export type WalletPaymentAuthorizationModal = {
 };
 
 export const useWalletPaymentAuthorizationModal = ({
-  onAuthorizationOutcome
+  onAuthorizationOutcome,
+  onDismiss
 }: Props): WalletPaymentAuthorizationModal => {
   const dispatch = useIODispatch();
   const authorizationUrlPot = useIOSelector(
@@ -73,6 +75,7 @@ export const useWalletPaymentAuthorizationModal = ({
             });
           },
           () => {
+            onDismiss();
             dispatch(walletPaymentAuthorization.cancel());
             setIsPendingAuthorization(false);
           }
@@ -94,6 +97,7 @@ export const useWalletPaymentAuthorizationModal = ({
     isPendingAuthorization,
     authorizationUrlPot,
     handleAuthorizationResult,
+    onDismiss,
     dispatch
   ]);
 
