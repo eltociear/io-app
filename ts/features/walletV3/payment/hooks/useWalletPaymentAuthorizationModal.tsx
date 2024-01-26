@@ -15,6 +15,7 @@ import {
   WalletPaymentOutcome,
   WalletPaymentOutcomeEnum
 } from "../types/PaymentOutcomeEnum";
+import { WALLET_WEBVIEW_OUTCOME_SCHEMA } from "../../common/utils/const";
 
 type Props = {
   onAuthorizationOutcome: (outcome: WalletPaymentOutcome) => void;
@@ -69,10 +70,15 @@ export const useWalletPaymentAuthorizationModal = ({
           () => {
             setIsPendingAuthorization(true);
 
-            return WebBrowser.openAuthSessionAsync(url, "", {
-              showTitle: false,
-              createTask: true
-            });
+            return WebBrowser.openAuthSessionAsync(
+              url,
+              WALLET_WEBVIEW_OUTCOME_SCHEMA,
+              {
+                showTitle: false,
+                createTask: true,
+                showInRecents: true
+              }
+            );
           },
           () => {
             onDismiss();
