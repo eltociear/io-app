@@ -6,7 +6,7 @@ import { applicationChangeState } from "../../../../../store/actions/application
 import { appReducer } from "../../../../../store/reducers";
 import { GlobalState } from "../../../../../store/reducers/types";
 import { renderScreenWithNavigationStoreContext } from "../../../../../utils/testWrapper";
-import { IDPayPaymentRoutes } from "../../navigation/navigator";
+import { IdPayPaymentRoutes } from "../../navigation/navigator";
 import { Context, INITIAL_CONTEXT } from "../../xstate/context";
 import { PaymentFailureEnum } from "../../types/PaymentFailure";
 import { createIDPayPaymentMachine } from "../../xstate/machine";
@@ -121,7 +121,7 @@ const renderComponent = (context?: Partial<Context>) => {
           <IDPayPaymentResultScreen />
         </PaymentMachineContext.Provider>
       ),
-      IDPayPaymentRoutes.IDPAY_PAYMENT_RESULT,
+      IdPayPaymentRoutes.IDPAY_PAYMENT_RESULT,
       {},
       store
     ),

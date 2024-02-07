@@ -22,7 +22,7 @@ import {
 } from "../../../barcode";
 import * as analytics from "../../../barcode/analytics";
 import { IOBarcodeOrigin } from "../../../barcode/types/IOBarcode";
-import { IDPayPaymentRoutes } from "../navigation/navigator";
+import { IdPayPaymentRoutes } from "../navigation/navigator";
 
 const IDPayPaymentCodeScanScreen = () => {
   const navigation = useNavigation<IOStackNavigationProp<AppParamsList>>();
@@ -68,8 +68,8 @@ const IDPayPaymentCodeScanScreen = () => {
 
   const navigateToCodeInputScreen = () => {
     analytics.trackBarcodeManualEntryPath("idpay");
-    navigation.navigate(IDPayPaymentRoutes.IDPAY_PAYMENT_MAIN, {
-      screen: IDPayPaymentRoutes.IDPAY_PAYMENT_CODE_INPUT
+    navigation.navigate(IdPayPaymentRoutes.IDPAY_PAYMENT_MAIN, {
+      screen: IdPayPaymentRoutes.IDPAY_PAYMENT_CODE_INPUT
     });
   };
 

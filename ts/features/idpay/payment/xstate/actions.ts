@@ -1,16 +1,12 @@
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/function";
+import { IOToast } from "../../../../components/Toast";
 import I18n from "../../../../i18n";
 import {
   AppParamsList,
   IOStackNavigationProp
 } from "../../../../navigation/params/AppParamsList";
 import { useIODispatch } from "../../../../store/hooks";
-import { showToast } from "../../../../utils/showToast";
 import { refreshSessionToken } from "../../../fastLogin/store/actions/tokenRefreshActions";
-import { IDPayDetailsRoutes } from "../../details/navigation";
-import { IDPayPaymentRoutes } from "../navigation/navigator";
-import { Context } from "./context";
+import { IdPayPaymentRoutes } from "../navigation/navigator";
 
 const createActionsImplementation = (
   navigation: IOStackNavigationProp<AppParamsList, keyof AppParamsList>,
@@ -27,32 +23,22 @@ const createActionsImplementation = (
   };
 
   const navigateToAuthorizationScreen = () => {
-    navigation.navigate(IDPayPaymentRoutes.IDPAY_PAYMENT_MAIN, {
-      screen: IDPayPaymentRoutes.IDPAY_PAYMENT_AUTHORIZATION,
+    navigation.navigate(IdPayPaymentRoutes.IDPAY_PAYMENT_MAIN, {
+      screen: IdPayPaymentRoutes.IDPAY_PAYMENT_AUTHORIZATION,
       params: {}
     });
   };
 
   const navigateToResultScreen = () =>
-    navigation.navigate(IDPayPaymentRoutes.IDPAY_PAYMENT_MAIN, {
-      screen: IDPayPaymentRoutes.IDPAY_PAYMENT_RESULT
+    navigation.navigate(IdPayPaymentRoutes.IDPAY_PAYMENT_MAIN, {
+      screen: IdPayPaymentRoutes.IDPAY_PAYMENT_RESULT
     });
 
   const showErrorToast = () =>
-    showToast(I18n.t("idpay.payment.authorization.error"), "danger", "top");
+    IOToast.error(I18n.t("idpay.payment.authorization.error"));
 
-  const exitAuthorization = (context: Context) => {
-    pipe(
-      context.transactionData,
-      O.map(({ initiativeId }) => {
-        navigation.popToTop();
-        navigation.navigate(IDPayDetailsRoutes.IDPAY_DETAILS_MAIN, {
-          screen: IDPayDetailsRoutes.IDPAY_DETAILS_MONITORING,
-          params: { initiativeId }
-        });
-      }),
-      O.getOrElse(() => navigation.pop())
-    );
+  const exitAuthorization = () => {
+    navigation.pop(); // TODO: (react-navigation:7.x) replace with popTo to the details screen
   };
 
   return {

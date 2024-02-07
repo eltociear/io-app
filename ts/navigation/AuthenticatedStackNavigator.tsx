@@ -18,32 +18,10 @@ import { FciStackNavigator } from "../features/fci/navigation/FciStackNavigator"
 import { FCI_ROUTES } from "../features/fci/navigation/routes";
 import { FimsNavigator } from "../features/fims/navigation/navigator";
 import FIMS_ROUTES from "../features/fims/navigation/routes";
-import { IdPayBarcodeNavigator } from "../features/idpay/barcode/navigation/navigator";
-import { IdPayBarcodeRoutes } from "../features/idpay/barcode/navigation/routes";
-import { IdPayCodeNavigator } from "../features/idpay/code/navigation/navigator";
-import { IdPayCodeRoutes } from "../features/idpay/code/navigation/routes";
-import {
-  IDPayConfigurationNavigator,
-  IDPayConfigurationRoutes
-} from "../features/idpay/configuration/navigation/navigator";
-import {
-  IDpayDetailsNavigator,
-  IDPayDetailsRoutes
-} from "../features/idpay/details/navigation";
-import {
-  IDPayOnboardingNavigator,
-  IDPayOnboardingRoutes
-} from "../features/idpay/onboarding/navigation/navigator";
-import {
-  IDPayPaymentNavigator,
-  IDPayPaymentRoutes
-} from "../features/idpay/payment/navigation/navigator";
-import { IDPayPaymentCodeScanScreen } from "../features/idpay/payment/screens/IDPayPaymentCodeScanScreen";
-import {
-  IDPayUnsubscriptionNavigator,
-  IDPayUnsubscriptionRoutes
-} from "../features/idpay/unsubscription/navigation/navigator";
+import { idPayFeatureNavigator } from "../features/idpay/common/navigation/navigator";
 import UnsupportedDeviceScreen from "../features/lollipop/screens/UnsupportedDeviceScreen";
+import { MessagesStackNavigator } from "../features/messages/navigation/MessagesNavigator";
+import { MESSAGES_ROUTES } from "../features/messages/navigation/routes";
 import UADONATION_ROUTES from "../features/uaDonations/navigation/routes";
 import { UAWebViewScreen } from "../features/uaDonations/screens/UAWebViewScreen";
 import { WalletBarcodeNavigator } from "../features/walletV3/barcode/navigation/navigator";
@@ -74,8 +52,6 @@ import {
   isIdPayEnabledSelector
 } from "../store/reducers/backendStatus";
 import { isGestureEnabled } from "../utils/navigation";
-import { MessagesStackNavigator } from "../features/messages/navigation/MessagesNavigator";
-import { MESSAGES_ROUTES } from "../features/messages/navigation/routes";
 import CheckEmailNavigator from "./CheckEmailNavigator";
 import OnboardingNavigator from "./OnboardingNavigator";
 import { AppParamsList } from "./params/AppParamsList";
@@ -232,61 +208,7 @@ const AuthenticatedStackNavigator = () => {
         />
       )}
 
-      {isIdPayEnabled && (
-        <>
-          <Stack.Screen
-            name={IDPayOnboardingRoutes.IDPAY_ONBOARDING_MAIN}
-            component={IDPayOnboardingNavigator}
-            options={{ gestureEnabled: isGestureEnabled, ...hideHeaderOptions }}
-          />
-          <Stack.Screen
-            name={IDPayDetailsRoutes.IDPAY_DETAILS_MAIN}
-            component={IDpayDetailsNavigator}
-            options={{ gestureEnabled: isGestureEnabled, ...hideHeaderOptions }}
-          />
-          <Stack.Screen
-            name={IDPayConfigurationRoutes.IDPAY_CONFIGURATION_MAIN}
-            component={IDPayConfigurationNavigator}
-            options={{ gestureEnabled: isGestureEnabled, ...hideHeaderOptions }}
-          />
-          <Stack.Screen
-            name={IDPayUnsubscriptionRoutes.IDPAY_UNSUBSCRIPTION_MAIN}
-            component={IDPayUnsubscriptionNavigator}
-            options={{ gestureEnabled: isGestureEnabled, ...hideHeaderOptions }}
-          />
-          {/* 
-            This screen is outside the IDPayPaymentNavigator to enable the slide from bottom animation.
-            FIXME IOBP-383: Using react-navigation 6.x we can achive this using a Stack.Group inside the IDPayPaymentNavigator
-          */}
-          <Stack.Screen
-            name={IDPayPaymentRoutes.IDPAY_PAYMENT_CODE_SCAN}
-            component={IDPayPaymentCodeScanScreen}
-            options={{
-              ...hideHeaderOptions,
-              ...TransitionPresets.ModalSlideFromBottomIOS,
-              gestureEnabled: isGestureEnabled
-            }}
-          />
-          <Stack.Screen
-            name={IDPayPaymentRoutes.IDPAY_PAYMENT_MAIN}
-            component={IDPayPaymentNavigator}
-            options={{ gestureEnabled: false, ...hideHeaderOptions }}
-          />
-          <Stack.Screen
-            name={IdPayCodeRoutes.IDPAY_CODE_MAIN}
-            options={hideHeaderOptions}
-            component={IdPayCodeNavigator}
-          />
-          <Stack.Screen
-            name={IdPayBarcodeRoutes.IDPAY_BARCODE_MAIN}
-            options={{
-              gestureEnabled: isGestureEnabled,
-              ...hideHeaderOptions
-            }}
-            component={IdPayBarcodeNavigator}
-          />
-        </>
-      )}
+      {isIdPayEnabled && idPayFeatureNavigator}
 
       <Stack.Screen
         name={WalletOnboardingRoutes.WALLET_ONBOARDING_MAIN}

@@ -22,7 +22,7 @@ import {
 } from "../../../store/reducers/backendStatus";
 import { emptyContextualHelp } from "../../../utils/emptyContextualHelp";
 import { useIOBottomSheetAutoresizableModal } from "../../../utils/hooks/bottomSheet";
-import { IDPayPaymentRoutes } from "../../idpay/payment/navigation/navigator";
+import { IdPayPaymentRoutes } from "../../idpay/payment/navigation/navigator";
 import { WalletPaymentRoutes } from "../../walletV3/payment/navigation/routes";
 import * as analytics from "../analytics";
 import { BarcodeScanBaseScreenComponent } from "../components/BarcodeScanBaseScreenComponent";
@@ -165,8 +165,8 @@ const BarcodeScanScreen = () => {
 
   const handleIdPayPaymentCodeInput = () => {
     manualInputModal.dismiss();
-    navigation.navigate(IDPayPaymentRoutes.IDPAY_PAYMENT_MAIN, {
-      screen: IDPayPaymentRoutes.IDPAY_PAYMENT_CODE_INPUT
+    navigation.navigate(IdPayPaymentRoutes.IDPAY_PAYMENT_MAIN, {
+      screen: IdPayPaymentRoutes.IDPAY_PAYMENT_CODE_INPUT
     });
   };
 

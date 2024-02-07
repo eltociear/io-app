@@ -27,7 +27,7 @@ import {
   formatNumberCurrencyCents,
   formatNumberCurrencyCentsOrDefault
 } from "../../common/utils/strings";
-import { IDPayPaymentParamsList } from "../navigation/navigator";
+import { IdPayPaymentParamsList } from "../navigation/navigator";
 import { usePaymentMachineService } from "../xstate/provider";
 import {
   selectIsAuthorizing,
@@ -43,7 +43,7 @@ export type IDPayPaymentAuthorizationScreenRouteParams = {
 };
 
 type IDPayPaymentAuthorizationRouteProps = RouteProp<
-  IDPayPaymentParamsList,
+  IdPayPaymentParamsList,
   "IDPAY_PAYMENT_AUTHORIZATION"
 >;
 
