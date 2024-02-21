@@ -17,6 +17,7 @@ import { IdPayActions } from "../../features/idpay/common/store/actions";
 import { LollipopActions } from "../../features/lollipop/store/actions/lollipop";
 import { MessagesActions } from "../../features/messages/store/actions";
 import { PnActions } from "../../features/pn/store/actions";
+import { WalletActions as WalletPocActions } from "../../features/wallet-poc/store/actions/index";
 import { AbiActions } from "../../features/wallet/onboarding/bancomat/store/actions";
 import { BPayActions } from "../../features/wallet/onboarding/bancomatPay/store/actions";
 import { CoBadgeActions } from "../../features/wallet/onboarding/cobadge/store/actions";
@@ -98,7 +99,8 @@ export type Action =
   | LollipopActions
   | FastLoginActions
   | WhatsNewActions
-  | WalletV3Actions;
+  | WalletV3Actions
+  | WalletPocActions;
 
 export type Dispatch = DispatchAPI<Action>;
 
