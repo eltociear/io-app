@@ -344,6 +344,10 @@ const PlaygroundsSection = () => {
         navigation.navigate(ROUTES.PROFILE_NAVIGATOR, {
           screen: ROUTES.WALLET_PLAYGROUND
         })
+    },
+    {
+      value: "Wallet redesign POC",
+      onPress: () => navigation.navigate(ROUTES.WALLET_POC)
     }
   ];
 

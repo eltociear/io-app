@@ -67,6 +67,7 @@ import I18n from "../../i18n";
 import { PaymentRequestsGetResponse } from "../../../definitions/backend/PaymentRequestsGetResponse";
 import { Detail_v2Enum } from "../../../definitions/backend/PaymentProblemJson";
 import { withRefreshApiCall } from "../../features/fastLogin/saga/utils";
+import { walletAddCards } from "../../features/wallet-poc/store/actions";
 
 //
 // Payment Manager APIs
@@ -103,6 +104,18 @@ export function* getWalletsV2(
         void mixpanelTrack("WALLETS_LOAD_SUCCESS", {
           count: wallets.length
         });
+
+        yield* put(
+          walletAddCards(
+            wallets.map(wallet => ({
+              kind: "payment",
+              id: wallet.idWallet.toString(),
+              label: "Carta",
+              circuit: "visa"
+            }))
+          )
+        );
+
         yield* put(fetchWalletsSuccess(wallets));
         return E.right<Error, ReadonlyArray<Wallet>>(wallets);
       } else {

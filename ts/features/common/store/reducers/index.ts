@@ -35,6 +35,9 @@ import {
   fastLoginReducer,
   FastLoginState
 } from "../../../fastLogin/store/reducers";
+import walletPocReducer, {
+  WalletState as WalletPocState
+} from "../../../wallet-poc/store/reducers";
 
 type LoginFeaturesState = {
   testLogin: TestLoginState;
@@ -51,6 +54,7 @@ export type FeaturesState = {
   whatsNew: WhatsNewState & PersistPartial;
   loginFeatures: LoginFeaturesState;
   wallet: WalletV3State;
+  walletPoc: WalletPocState;
 };
 
 export type PersistedFeaturesState = FeaturesState & PersistPartial;
@@ -67,7 +71,8 @@ const rootReducer = combineReducers<FeaturesState, Action>({
     nativeLogin: nativeLoginReducer,
     fastLogin: fastLoginReducer,
     cieLogin: cieLoginReducer
-  })
+  }),
+  walletPoc: walletPocReducer
 });
 
 const CURRENT_REDUX_FEATURES_STORE_VERSION = 1;

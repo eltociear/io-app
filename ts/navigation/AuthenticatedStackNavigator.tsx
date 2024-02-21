@@ -44,8 +44,11 @@ import {
   IDPayUnsubscriptionRoutes
 } from "../features/idpay/unsubscription/navigation/navigator";
 import UnsupportedDeviceScreen from "../features/lollipop/screens/UnsupportedDeviceScreen";
+import { MessagesStackNavigator } from "../features/messages/navigation/MessagesNavigator";
+import { MESSAGES_ROUTES } from "../features/messages/navigation/routes";
 import UADONATION_ROUTES from "../features/uaDonations/navigation/routes";
 import { UAWebViewScreen } from "../features/uaDonations/screens/UAWebViewScreen";
+import { WalletPocHomeScreen } from "../features/wallet-poc/screens/WalletPocHomeScreen";
 import { WalletBarcodeNavigator } from "../features/walletV3/barcode/navigation/navigator";
 import { WalletBarcodeRoutes } from "../features/walletV3/barcode/navigation/routes";
 import {
@@ -74,8 +77,6 @@ import {
   isIdPayEnabledSelector
 } from "../store/reducers/backendStatus";
 import { isGestureEnabled } from "../utils/navigation";
-import { MessagesStackNavigator } from "../features/messages/navigation/MessagesNavigator";
-import { MESSAGES_ROUTES } from "../features/messages/navigation/routes";
 import CheckEmailNavigator from "./CheckEmailNavigator";
 import OnboardingNavigator from "./OnboardingNavigator";
 import { AppParamsList } from "./params/AppParamsList";
@@ -328,6 +329,13 @@ const AuthenticatedStackNavigator = () => {
           ...TransitionPresets.ModalSlideFromBottomIOS,
           gestureEnabled: isGestureEnabled,
           ...hideHeaderOptions
+        }}
+      />
+      <Stack.Screen
+        name={ROUTES.WALLET_POC}
+        component={WalletPocHomeScreen}
+        options={{
+          gestureEnabled: true
         }}
       />
     </Stack.Navigator>

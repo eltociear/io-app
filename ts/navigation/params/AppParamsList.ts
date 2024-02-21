@@ -120,6 +120,8 @@ export type AppParamsList = {
   [WalletBarcodeRoutes.WALLET_BARCODE_MAIN]: NavigatorScreenParams<WalletBarcodeParamsList>;
   [WalletDetailsRoutes.WALLET_DETAILS_MAIN]: NavigatorScreenParams<WalletDetailsParamsList>;
   [WalletTransactionRoutes.WALLET_TRANSACTION_MAIN]: NavigatorScreenParams<WalletTransactionParamsList>;
+
+  [ROUTES.WALLET_POC]: undefined;
 };
 
 /**
