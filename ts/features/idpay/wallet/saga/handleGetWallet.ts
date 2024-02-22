@@ -12,6 +12,8 @@ import { walletAddCards } from "../../../wallet-poc/store/actions";
 import { IDPayClient } from "../../common/api/client";
 import { IDPayDetailsRoutes } from "../../details/navigation";
 import { idPayWalletGet } from "../store/actions";
+import CardBaseComponent from "../../../wallet-poc/components/Payment";
+import ComponentTypes from "../../../wallet-poc/types/ComponentTypes";
 
 /**
  * Handle the remote call to retrieve the IDPay wallet
@@ -45,22 +47,11 @@ export function* handleGetIDPayWallet(
           walletAddCards(
             initiativeList.map(initiative => ({
               kind: "bonus",
-              id: initiative.initiativeId,
+              key: initiative.initiativeId,
               label: initiative.initiativeName || "",
               amount: initiative.amount || 0,
-              onPress: () => {
-                NavigationService.dispatchNavigationAction(
-                  CommonActions.navigate(
-                    IDPayDetailsRoutes.IDPAY_DETAILS_MAIN,
-                    {
-                      screen: IDPayDetailsRoutes.IDPAY_DETAILS_MONITORING,
-                      params: {
-                        initiativeId: initiative.initiativeId
-                      }
-                    }
-                  )
-                );
-              }
+              componentType: ComponentTypes.IDPAY,
+              initiativeId: initiative.initiativeId
             }))
           )
         );

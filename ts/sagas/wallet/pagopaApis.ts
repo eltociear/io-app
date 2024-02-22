@@ -68,6 +68,7 @@ import { PaymentRequestsGetResponse } from "../../../definitions/backend/Payment
 import { Detail_v2Enum } from "../../../definitions/backend/PaymentProblemJson";
 import { withRefreshApiCall } from "../../features/fastLogin/saga/utils";
 import { walletAddCards } from "../../features/wallet-poc/store/actions";
+import ComponentTypes from "../../features/wallet-poc/types/ComponentTypes";
 
 //
 // Payment Manager APIs
@@ -109,9 +110,9 @@ export function* getWalletsV2(
           walletAddCards(
             wallets.map(wallet => ({
               kind: "payment",
-              id: wallet.idWallet.toString(),
+              key: wallet.idWallet.toString(),
               label: "Carta",
-              circuit: "visa"
+              componentType: ComponentTypes.PAYMENT
             }))
           )
         );

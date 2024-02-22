@@ -9,7 +9,7 @@ import {
 } from "../actions";
 
 export type WalletState = {
-  cards: { [id: string]: WalletCard };
+  cards: { [key: string]: WalletCard };
 };
 
 const INITIAL_STATE: WalletState = {
@@ -26,7 +26,7 @@ const reducer = (
         ...state,
         cards: {
           ...state.cards,
-          [action.payload.id]: action.payload
+          [action.payload.key]: action.payload
         }
       };
 
@@ -34,7 +34,7 @@ const reducer = (
       const updatedCards = action.payload.reduce(
         (obj, card) => ({
           ...obj,
-          [card.id]: card
+          [card.key]: card
         }),
         state.cards
       );
@@ -56,7 +56,7 @@ const reducer = (
     case getType(walletRemoveCards): {
       const updatedCards = Object.fromEntries(
         Object.entries(state.cards).filter(
-          ([id]) => !action.payload.includes(id)
+          ([key]) => !action.payload.includes(key)
         )
       );
 

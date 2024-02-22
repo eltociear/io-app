@@ -1,15 +1,13 @@
-import { NavigatorScreenParams } from "@react-navigation/native";
-import { AppParamsList } from "../../../navigation/params/AppParamsList";
-
-type WalletCardBase = {
-  id: string;
+export type WalletCardBase = {
+  key: string;
   label: string;
-  onPress?: () => void;
+  componentType: string;
 };
 
-type WalletCardBonus = {
+export type WalletCardBonus = {
   kind: "bonus";
   amount: number;
+  initiativeId: string;
 };
 
 type WalletCardPayment = {

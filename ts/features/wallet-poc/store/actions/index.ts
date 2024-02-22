@@ -8,10 +8,10 @@ export const walletAddCards =
   createStandardAction("WALLET_ADD_CARDS")<ReadonlyArray<WalletCard>>();
 
 export const walletRemoveCard =
-  createStandardAction("WALLET_REMOVE_CARD")<WalletCard["id"]>();
+  createStandardAction("WALLET_REMOVE_CARD")<WalletCard["key"]>();
 
 export const walletRemoveCards = createStandardAction("WALLET_REMOVE_CARDS")<
-  ReadonlyArray<WalletCard["id"]>
+  ReadonlyArray<WalletCard["key"]>
 >();
 
 export type WalletActions =

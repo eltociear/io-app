@@ -1,8 +1,5 @@
 import {
-  Body,
-  ButtonSolid,
   GradientScrollView,
-  H2,
   H3,
   HeaderFirstLevel
 } from "@pagopa/io-app-design-system";
@@ -11,6 +8,9 @@ import { useIONavigation } from "../../../navigation/params/AppParamsList";
 import { useIOSelector } from "../../../store/hooks";
 import { selectWalletCards } from "../store/selectors";
 import { WalletCard } from "../types";
+import componentMapper from "../types/ComponentMapper";
+import { IdPayProps } from "../components/IdPay";
+import { PaymentProps } from "../components/Payment";
 
 const WalletPocHomeScreen = () => {
   const navigation = useIONavigation();
@@ -28,17 +28,17 @@ const WalletPocHomeScreen = () => {
   const renderCardFn = (card: WalletCard) => {
     switch (card.kind) {
       case "bonus":
-        return (
-          <ButtonSolid
-            label={card.label}
-            accessibilityLabel=""
-            onPress={() => {
-              card.onPress?.();
-            }}
-          />
-        );
+        const IdPay = componentMapper[
+          card.componentType
+        ] as React.ComponentType<IdPayProps>;
+        return <IdPay {...card} />;
       case "payment":
-        return <Body key={card.id}>Payment: {card.circuit}</Body>;
+        const Payment = componentMapper[
+          card.componentType
+        ] as React.ComponentType<PaymentProps>;
+        return (
+          <Payment key={card.key} label={card.label} circuit={card.circuit} />
+        );
     }
   };
 
