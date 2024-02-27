@@ -6,6 +6,10 @@ export type PaymentProps = {
   circuit: string;
 };
 
+/**
+ * Payment component extended card example
+ * @param props
+ */
 const Payment = (props: PaymentProps) => (
   <H3 accessibilityLabel="">
     Payment: {props.label} - circuit: {props.circuit}

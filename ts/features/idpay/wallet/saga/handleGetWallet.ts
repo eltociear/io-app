@@ -1,20 +1,15 @@
-import { CommonActions } from "@react-navigation/native";
 import * as E from "fp-ts/lib/Either";
 import { call, put } from "typed-redux-saga/macro";
 import { ActionType } from "typesafe-actions";
 import { PreferredLanguageEnum } from "../../../../../definitions/backend/PreferredLanguage";
-import NavigationService from "../../../../navigation/NavigationService";
 import { SagaCallReturnType } from "../../../../types/utils";
 import { getGenericError, getNetworkError } from "../../../../utils/errors";
 import { readablePrivacyReport } from "../../../../utils/reporters";
 import { withRefreshApiCall } from "../../../fastLogin/saga/utils";
 import { walletAddCards } from "../../../wallet-poc/store/actions";
 import { IDPayClient } from "../../common/api/client";
-import { IDPayDetailsRoutes } from "../../details/navigation";
 import { idPayWalletGet } from "../store/actions";
-import CardBaseComponent from "../../../wallet-poc/components/Payment";
-import ComponentTypes from "../../../wallet-poc/types/ComponentTypes";
-
+import { ComponentTypes } from "../../../wallet-poc/types/ComponentTypes";
 /**
  * Handle the remote call to retrieve the IDPay wallet
  * @param getWallet
@@ -46,11 +41,11 @@ export function* handleGetIDPayWallet(
         yield* put(
           walletAddCards(
             initiativeList.map(initiative => ({
-              kind: "bonus",
+              category: "bonus",
               key: initiative.initiativeId,
               label: initiative.initiativeName || "",
               amount: initiative.amount || 0,
-              componentType: ComponentTypes.IDPAY,
+              cardType: ComponentTypes.IDPAY,
               initiativeId: initiative.initiativeId
             }))
           )

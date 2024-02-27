@@ -1,16 +1,17 @@
 import {
   GradientScrollView,
   H3,
-  HeaderFirstLevel
+  HeaderFirstLevel,
+  IOColors,
+  VSpacer
 } from "@pagopa/io-app-design-system";
 import React from "react";
+import { View } from "react-native";
 import { useIONavigation } from "../../../navigation/params/AppParamsList";
 import { useIOSelector } from "../../../store/hooks";
 import { selectWalletCards } from "../store/selectors";
 import { WalletCard } from "../types";
-import componentMapper from "../types/ComponentMapper";
-import { IdPayProps } from "../components/IdPay";
-import { PaymentProps } from "../components/Payment";
+import { ComponentProps, componentMapper } from "../types/ComponentTypes";
 
 const WalletPocHomeScreen = () => {
   const navigation = useIONavigation();
@@ -22,24 +23,26 @@ const WalletPocHomeScreen = () => {
     });
   }, [navigation]);
 
-  const bonusCards = cards.filter(c => c.kind === "bonus");
-  const paymentCards = cards.filter(c => c.kind === "payment");
-
   const renderCardFn = (card: WalletCard) => {
-    switch (card.kind) {
-      case "bonus":
-        const IdPay = componentMapper[
-          card.componentType
-        ] as React.ComponentType<IdPayProps>;
-        return <IdPay {...card} />;
-      case "payment":
-        const Payment = componentMapper[
-          card.componentType
-        ] as React.ComponentType<PaymentProps>;
-        return (
-          <Payment key={card.key} label={card.label} circuit={card.circuit} />
-        );
-    }
+    const CardComponent = componentMapper[
+      card.cardType
+    ] as React.ComponentType<ComponentProps>;
+    return <CardComponent {...card} />;
+  };
+
+  const CategoryStack = (category: string) => {
+    const categoryCards = cards.filter(c => c.category === category);
+    return (
+      <>
+        <View style={{ borderColor: IOColors.greyLight, borderWidth: 2 }}>
+          <H3 style={{ backgroundColor: IOColors.aquaUltraLight }}>
+            {category}
+          </H3>
+          {categoryCards.map(renderCardFn)}
+        </View>
+        <VSpacer />
+      </>
+    );
   };
 
   return (
@@ -50,10 +53,10 @@ const WalletPocHomeScreen = () => {
         onPress: () => undefined
       }}
     >
-      <H3>Bonus</H3>
-      {bonusCards.map(renderCardFn)}
-      <H3>Payments</H3>
-      {paymentCards.map(renderCardFn)}
+      {cards
+        .map(c => c.category)
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .map(CategoryStack)}
     </GradientScrollView>
   );
 };

@@ -7,6 +7,10 @@ import CardBaseComponent from "./CardBaseComponent";
 
 export type IdPayProps = WalletCardBonus & WalletCardBase;
 
+/**
+ * IdPay component extended card example
+ * @param props
+ */
 const IdPay = (props: IdPayProps) => {
   const navigation = useIONavigation();
   return (
