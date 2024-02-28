@@ -77,6 +77,8 @@ import {
   isIdPayEnabledSelector
 } from "../store/reducers/backendStatus";
 import { isGestureEnabled } from "../utils/navigation";
+import { FEATUREX_ROUTES } from "../features/feature-x/navigation/routes";
+import FXDetailsScreen from "../features/feature-x/screens/FXDetailsScreen";
 import CheckEmailNavigator from "./CheckEmailNavigator";
 import OnboardingNavigator from "./OnboardingNavigator";
 import { AppParamsList } from "./params/AppParamsList";
@@ -334,6 +336,14 @@ const AuthenticatedStackNavigator = () => {
       <Stack.Screen
         name={ROUTES.WALLET_POC}
         component={WalletPocHomeScreen}
+        options={{
+          gestureEnabled: true
+        }}
+      />
+
+      <Stack.Screen
+        name={FEATUREX_ROUTES.DETAILS}
+        component={FXDetailsScreen}
         options={{
           gestureEnabled: true
         }}

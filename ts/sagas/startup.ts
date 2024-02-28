@@ -94,6 +94,7 @@ import { ReduxSagaEffect, SagaCallReturnType } from "../types/utils";
 import { trackKeychainGetFailure } from "../utils/analytics";
 import { isTestEnv } from "../utils/environment";
 import { deletePin, getPin } from "../utils/keychain";
+import { watchFXSaga } from "../features/feature-x/saga";
 import {
   clearKeychainError,
   keychainError
@@ -613,6 +614,9 @@ export function* initializeApplicationSaga(
       loadUserDataProcessing.request(UserDataProcessingChoiceEnum.DELETE)
     );
   }
+
+  // watch FX saga
+  yield* fork(watchFXSaga);
 
   // Watch for checking the user email notifications preferences
   yield* fork(watchEmailNotificationPreferencesSaga);

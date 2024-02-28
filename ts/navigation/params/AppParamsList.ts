@@ -65,6 +65,7 @@ import ZENDESK_ROUTES from "../../features/zendesk/navigation/routes";
 import ROUTES from "../routes";
 import { MESSAGES_ROUTES } from "../../features/messages/navigation/routes";
 import { MessagesParamsList } from "../../features/messages/navigation/params";
+import { FEATUREX_ROUTES } from "../../features/feature-x/navigation/routes";
 import { AuthenticationParamsList } from "./AuthenticationParamsList";
 import { MainTabParamsList } from "./MainTabParamsList";
 import { OnboardingParamsList } from "./OnboardingParamsList";
@@ -122,6 +123,7 @@ export type AppParamsList = {
   [WalletTransactionRoutes.WALLET_TRANSACTION_MAIN]: NavigatorScreenParams<WalletTransactionParamsList>;
 
   [ROUTES.WALLET_POC]: undefined;
+  [FEATUREX_ROUTES.DETAILS]: undefined;
 };
 
 /**

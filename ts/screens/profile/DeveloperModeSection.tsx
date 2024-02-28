@@ -49,6 +49,7 @@ import { getDeviceId } from "../../utils/device";
 import { isDevEnv } from "../../utils/environment";
 import { useIONavigation } from "../../navigation/params/AppParamsList";
 
+import { FEATUREX_ROUTES } from "../../features/feature-x/navigation/routes";
 import DSEnableSwitch from "./components/DSEnableSwitch";
 
 type PlaygroundsNavListItem = {
@@ -348,6 +349,10 @@ const PlaygroundsSection = () => {
     {
       value: "Wallet redesign POC",
       onPress: () => navigation.navigate(ROUTES.WALLET_POC)
+    },
+    {
+      value: "Feature-X POC",
+      onPress: () => navigation.navigate(FEATUREX_ROUTES.DETAILS)
     }
   ];
 

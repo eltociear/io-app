@@ -26,6 +26,7 @@ import { WalletActions as WalletV3Actions } from "../../features/walletV3/common
 import { WhatsNewActions } from "../../features/whatsnew/store/actions";
 import { ZendeskSupportActions } from "../../features/zendesk/store/actions";
 import { GlobalState } from "../reducers/types";
+import { FXActions } from "../../features/feature-x/store/actions";
 import { AnalyticsActions } from "./analytics";
 import { ApplicationActions } from "./application";
 import { AuthenticationActions } from "./authentication";
@@ -100,7 +101,8 @@ export type Action =
   | FastLoginActions
   | WhatsNewActions
   | WalletV3Actions
-  | WalletPocActions;
+  | WalletPocActions
+  | FXActions;
 
 export type Dispatch = DispatchAPI<Action>;
 
