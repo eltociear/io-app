@@ -31,6 +31,9 @@ import { DSButtons } from "../core/DSButtons";
 import { DSCards } from "../core/DSCards";
 import { DSColors } from "../core/DSColors";
 import { DSEdgeToEdgeArea } from "../core/DSEdgeToEdgeArea";
+import { DSFooterActions } from "../core/DSFooterActions";
+import { DSFooterActionsNotFixed } from "../core/DSFooterActionsNotFixed";
+import { DSFooterActionsSticky } from "../core/DSFooterActionsSticky";
 import { DSFullScreenModal } from "../core/DSFullScreenModal";
 import { DSHapticFeedback } from "../core/DSHapticFeedback";
 import { DSHeaderFirstLevel } from "../core/DSHeaderFirstLevel";
@@ -42,6 +45,7 @@ import { DSIOScrollViewWithoutActions } from "../core/DSIOScrollViewWithoutActio
 import { DSIcons } from "../core/DSIcons";
 import { DSLayout } from "../core/DSLayout";
 import { DSLegacyPictograms } from "../core/DSLegacyPictograms";
+import { DSListItemScreen } from "../core/DSListItemScreen";
 import { DSListItems } from "../core/DSListItems";
 import { DSLoaders } from "../core/DSLoaders";
 import { DSLogos } from "../core/DSLogos";
@@ -51,20 +55,17 @@ import { DSOTPInput } from "../core/DSOTPInput";
 import { DSPictograms } from "../core/DSPictograms";
 import { DSSafeArea } from "../core/DSSafeArea";
 import { DSSafeAreaCentered } from "../core/DSSafeAreaCentered";
+import { DSScreenEndMargin } from "../core/DSScreenEndMargin";
 import { DSScreenOperationResult } from "../core/DSScreenOperationResult";
 import { DSSelection } from "../core/DSSelection";
 import { DSStepper } from "../core/DSStepper";
-import { DSFooterActionsSticky } from "../core/DSFooterActionsSticky";
 import { DSTabNavigation } from "../core/DSTabNavigation";
 import { DSTextFields } from "../core/DSTextFields";
 import { DSToastNotifications } from "../core/DSToastNotifications";
+import { DSTransitions } from "../core/DSTransitions";
 import { DSTypography } from "../core/DSTypography";
 import { DSWallet } from "../core/DSWallet";
 import { DSWizardScreen } from "../core/DSWizardScreen";
-import DSListItemScreen from "../core/DSListItemScreen";
-import { DSFooterActions } from "../core/DSFooterActions";
-import { DSFooterActionsNotFixed } from "../core/DSFooterActionsNotFixed";
-import { DSScreenEndMargin } from "../core/DSScreenEndMargin";
 import { DesignSystemParamsList } from "./params";
 import DESIGN_SYSTEM_ROUTES from "./routes";
 
@@ -235,6 +236,14 @@ export const DesignSystemNavigator = () => {
           component={DSHapticFeedback}
           options={{
             headerTitle: DESIGN_SYSTEM_ROUTES.FOUNDATION.HAPTIC_FEEDBACK.title
+          }}
+        />
+
+        <Stack.Screen
+          name={DESIGN_SYSTEM_ROUTES.FOUNDATION.TRANSITIONS.route}
+          component={DSTransitions}
+          options={{
+            headerTitle: DESIGN_SYSTEM_ROUTES.FOUNDATION.TRANSITIONS.title
           }}
         />
 

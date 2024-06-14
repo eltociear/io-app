@@ -6,7 +6,7 @@ import { useHeaderSecondLevel } from "../../../hooks/useHeaderSecondLevel";
 import { useIONavigation } from "../../../navigation/params/AppParamsList";
 import I18n from "../../../i18n";
 
-const DSListItemScreen = () => {
+export const DSListItemScreen = () => {
   const navigation = useIONavigation();
   const onButtonPress = () => {
     Alert.alert("Alert", "Action triggered");
