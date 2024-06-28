@@ -11,23 +11,30 @@ type ErrorPayload = {
   error: Error;
 };
 
-export const trialSystemActivationStatusUpsert = createAsyncAction(
-  "TRIAL_SYSTEM_ACTIVATION_UPSERT_REQUEST",
-  "TRIAL_SYSTEM_ACTIVATION_UPSERT_SUCCESS",
-  "TRIAL_SYSTEM_ACTIVATION_UPSERT_FAILURE"
+export const trialSystemStatusActivation = createAsyncAction(
+  "TRIAL_SYSTEM_ACTIVATION_REQUEST",
+  "TRIAL_SYSTEM_ACTIVATION_SUCCESS",
+  "TRIAL_SYSTEM_ACTIVATION_FAILURE"
 )<TrialId, Subscription, ErrorPayload>();
 
-export const trialSystemActivationStatus = createAsyncAction(
-  "TRIAL_SYSTEM_ACTIVATION_STATUS_REQUEST",
-  "TRIAL_SYSTEM_ACTIVATION_STATUS_SUCCESS",
-  "TRIAL_SYSTEM_ACTIVATION_STATUS_FAILURE"
+export const trialSystemStatusDeactivation = createAsyncAction(
+  "TRIAL_SYSTEM_DEACTIVATION_REQUEST",
+  "TRIAL_SYSTEM_DEACTIVATION_SUCCESS",
+  "TRIAL_SYSTEM_DEACTIVATION_FAILURE"
 )<TrialId, Subscription, ErrorPayload>();
 
-export const trialSystemActivationStatusReset = createStandardAction(
-  "TRIAL_SYSTEM_ACTIVATION_STATUS_RESET"
+export const trialSystemStatus = createAsyncAction(
+  "TRIAL_SYSTEM_STATUS_REQUEST",
+  "TRIAL_SYSTEM_STATUS_SUCCESS",
+  "TRIAL_SYSTEM_STATUS_FAILURE"
+)<TrialId, Subscription, ErrorPayload>();
+
+export const trialSystemStatusReset = createStandardAction(
+  "TRIAL_SYSTEM_STATUS_RESET"
 )<TrialId>();
 
 export type TrialSystemActions =
-  | ActionType<typeof trialSystemActivationStatusUpsert>
-  | ActionType<typeof trialSystemActivationStatusReset>
-  | ActionType<typeof trialSystemActivationStatus>;
+  | ActionType<typeof trialSystemStatus>
+  | ActionType<typeof trialSystemStatusActivation>
+  | ActionType<typeof trialSystemStatusReset>
+  | ActionType<typeof trialSystemStatusDeactivation>;

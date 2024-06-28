@@ -8,9 +8,10 @@ import {
 } from "../../../../../definitions/trial_systwem/SubscriptionState";
 import { Action } from "../../../../store/actions/types";
 import {
-  trialSystemActivationStatus,
-  trialSystemActivationStatusReset,
-  trialSystemActivationStatusUpsert
+  trialSystemStatus,
+  trialSystemStatusReset,
+  trialSystemStatusActivation,
+  trialSystemStatusDeactivation
 } from "../actions";
 import { GlobalState } from "../../../../store/reducers/types";
 
@@ -31,24 +32,26 @@ export const trialSystemActivationStatusReducer = (
   action: Action
 ): TrialSystemState => {
   switch (action.type) {
-    case getType(trialSystemActivationStatus.request):
+    case getType(trialSystemStatus.request):
       return {
         ...state,
         [action.payload]: pot.toLoading(state[action.payload] ?? pot.none)
       };
-    case getType(trialSystemActivationStatusUpsert.success):
-    case getType(trialSystemActivationStatus.success):
+    case getType(trialSystemStatusActivation.success):
+    case getType(trialSystemStatusDeactivation.success):
+    case getType(trialSystemStatus.success):
       return {
         ...state,
         [action.payload.trialId]: pot.some(action.payload.state)
       };
-    case getType(trialSystemActivationStatusReset):
+    case getType(trialSystemStatusReset):
       return {
         ...state,
         [action.payload]: pot.none
       };
-    case getType(trialSystemActivationStatusUpsert.failure):
-    case getType(trialSystemActivationStatus.failure):
+    case getType(trialSystemStatusActivation.failure):
+    case getType(trialSystemStatusDeactivation.failure):
+    case getType(trialSystemStatus.failure):
       return {
         ...state,
         [action.payload.trialId]: pot.toError(
@@ -56,26 +59,26 @@ export const trialSystemActivationStatusReducer = (
           action.payload.error
         )
       };
-    case getType(trialSystemActivationStatusUpsert.request):
+    case getType(trialSystemStatusActivation.request):
       return {
         ...state,
         [action.payload]: pot.toUpdating(
           state[action.payload] ?? pot.none,
-          isStateActive(state[action.payload])
-            ? SubscriptionStateEnum.UNSUBSCRIBED
-            : SubscriptionStateEnum.SUBSCRIBED
+          SubscriptionStateEnum.SUBSCRIBED
+        )
+      };
+    case getType(trialSystemStatusDeactivation.request):
+      return {
+        ...state,
+        [action.payload]: pot.toUpdating(
+          state[action.payload] ?? pot.none,
+          SubscriptionStateEnum.UNSUBSCRIBED
         )
       };
     default:
       return state;
   }
 };
-
-const isStateActive = (status: pot.Pot<SubscriptionState, Error> | undefined) =>
-  status &&
-  pot.isSome(status) &&
-  (status.value === SubscriptionStateEnum.ACTIVE ||
-    status.value === SubscriptionStateEnum.SUBSCRIBED);
 
 export const trialSystemActivationStatusSelector = (
   state: GlobalState

@@ -8,35 +8,36 @@ import { SessionToken } from "../../../../types/SessionToken";
 import { TrialSystemClient, createTrialSystemClient } from "../../api/client";
 import { apiUrlPrefix } from "../../../../config";
 import {
-  trialSystemActivationStatus,
-  trialSystemActivationStatusReset,
-  trialSystemActivationStatusUpsert
+  trialSystemStatus,
+  trialSystemStatusReset,
+  trialSystemStatusActivation,
+  trialSystemStatusDeactivation
 } from "../actions";
 import { getError } from "../../../../utils/errors";
 import I18n from "../../../../i18n";
 
-function* handleTrialSystemActivationStatusUpsert(
-  upsertTrialSystemActivationStatus: TrialSystemClient["createSubscription"],
-  action: ActionType<typeof trialSystemActivationStatusUpsert.request>
+function* handleTrialSystemStatusActivation(
+  createSubscription: TrialSystemClient["createSubscription"],
+  action: ActionType<typeof trialSystemStatusActivation.request>
 ) {
   try {
-    const result = yield* call(upsertTrialSystemActivationStatus, {
+    const result = yield* call(createSubscription, {
       trialId: action.payload
     });
 
     if (E.isLeft(result)) {
       yield* put(
-        trialSystemActivationStatusUpsert.failure({
+        trialSystemStatusActivation.failure({
           trialId: action.payload,
           error: new Error(readableReport(result.left))
         })
       );
     } else if (result.right.status === 201) {
-      yield* put(trialSystemActivationStatusUpsert.success(result.right.value));
+      yield* put(trialSystemStatusActivation.success(result.right.value));
       IOToast.success(I18n.t("features.trialSystem.toast.subscribed"));
     } else {
       yield* put(
-        trialSystemActivationStatusUpsert.failure({
+        trialSystemStatusActivation.failure({
           trialId: action.payload,
           error: new Error(`response status ${result.right.status}`)
         })
@@ -45,7 +46,7 @@ function* handleTrialSystemActivationStatusUpsert(
     }
   } catch (e) {
     yield* put(
-      trialSystemActivationStatusUpsert.failure({
+      trialSystemStatusActivation.failure({
         trialId: action.payload,
         error: getError(e)
       })
@@ -54,18 +55,57 @@ function* handleTrialSystemActivationStatusUpsert(
   }
 }
 
-function* handleTrialSystemActivationStatus(
-  trialSystemActivationStatusRequest: TrialSystemClient["getSubscription"],
-  action: ActionType<typeof trialSystemActivationStatus.request>
+function* handleTrialSystemStatusDeactivation(
+  createSubscription: TrialSystemClient["createSubscription"],
+  action: ActionType<typeof trialSystemStatusDeactivation.request>
 ) {
   try {
-    const result = yield* call(trialSystemActivationStatusRequest, {
+    const result = yield* call(createSubscription, {
       trialId: action.payload
     });
 
     if (E.isLeft(result)) {
       yield* put(
-        trialSystemActivationStatus.failure({
+        trialSystemStatusDeactivation.failure({
+          trialId: action.payload,
+          error: new Error(readableReport(result.left))
+        })
+      );
+    } else if (result.right.status === 201) {
+      yield* put(trialSystemStatusDeactivation.success(result.right.value));
+      IOToast.success(I18n.t("features.trialSystem.toast.subscribed"));
+    } else {
+      yield* put(
+        trialSystemStatusDeactivation.failure({
+          trialId: action.payload,
+          error: new Error(`response status ${result.right.status}`)
+        })
+      );
+      IOToast.error(I18n.t("global.genericError"));
+    }
+  } catch (e) {
+    yield* put(
+      trialSystemStatusDeactivation.failure({
+        trialId: action.payload,
+        error: getError(e)
+      })
+    );
+    IOToast.error(I18n.t("global.genericError"));
+  }
+}
+
+function* handleTrialSystemStatus(
+  getSubscription: TrialSystemClient["getSubscription"],
+  action: ActionType<typeof trialSystemStatus.request>
+) {
+  try {
+    const result = yield* call(getSubscription, {
+      trialId: action.payload
+    });
+
+    if (E.isLeft(result)) {
+      yield* put(
+        trialSystemStatus.failure({
           trialId: action.payload,
           error: new Error(readableReport(result.left))
         })
@@ -74,16 +114,16 @@ function* handleTrialSystemActivationStatus(
     }
 
     if (result.right.status === 200) {
-      yield* put(trialSystemActivationStatus.success(result.right.value));
+      yield* put(trialSystemStatus.success(result.right.value));
       return;
     }
 
     if (result.right.status === 404) {
-      yield* put(trialSystemActivationStatusReset(action.payload));
+      yield* put(trialSystemStatusReset(action.payload));
       return;
     } else {
       yield* put(
-        trialSystemActivationStatus.failure({
+        trialSystemStatus.failure({
           trialId: action.payload,
           error: new Error(`response status ${result.right.status}`)
         })
@@ -91,7 +131,7 @@ function* handleTrialSystemActivationStatus(
     }
   } catch (e) {
     yield* put(
-      trialSystemActivationStatus.failure({
+      trialSystemStatus.failure({
         trialId: action.payload,
         error: getError(e)
       })
@@ -103,14 +143,20 @@ export function* watchTrialSystemSaga(bearerToken: SessionToken): SagaIterator {
   const trialSystemClient = createTrialSystemClient(apiUrlPrefix, bearerToken);
 
   yield* takeLatest(
-    trialSystemActivationStatusUpsert.request,
-    handleTrialSystemActivationStatusUpsert,
+    trialSystemStatusActivation.request,
+    handleTrialSystemStatusActivation,
     trialSystemClient.createSubscription
   );
 
   yield* takeLatest(
-    trialSystemActivationStatus.request,
-    handleTrialSystemActivationStatus,
+    trialSystemStatusDeactivation.request,
+    handleTrialSystemStatusDeactivation,
+    trialSystemClient.createSubscription // TODO replace with correct api client once deactivation is available
+  );
+
+  yield* takeLatest(
+    trialSystemStatus.request,
+    handleTrialSystemStatus,
     trialSystemClient.getSubscription
   );
 }
