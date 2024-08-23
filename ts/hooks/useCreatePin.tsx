@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useIOToast } from "@pagopa/io-app-design-system";
-import { AccessibilityInfo, Platform } from "react-native";
+import { AccessibilityInfo } from "react-native";
 import I18n from "../i18n";
 import { createPinSuccess } from "../store/actions/pinset";
 import { useIODispatch, useIOSelector } from "../store/hooks";
@@ -46,9 +46,12 @@ export const useCreatePin = (props = { isOnboarding: false }) => {
           if (!isOnboarding) {
             const successMessage = I18n.t("onboarding.pin.success.message");
             toastSuccess(successMessage);
-            if (Platform.OS === "android") {
-              AccessibilityInfo.announceForAccessibility(successMessage);
-            }
+            setTimeout(() => {
+              AccessibilityInfo.announceForAccessibilityWithOptions(
+                successMessage,
+                { queue: true }
+              );
+            }, 2000);
             navigation.navigate(ROUTES.PROFILE_NAVIGATOR, {
               screen: ROUTES.PROFILE_SECURITY
             });
