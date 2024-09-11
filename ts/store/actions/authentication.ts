@@ -93,6 +93,10 @@ export const sessionExpired = createStandardAction("SESSION_EXPIRED")();
 
 export const sessionInvalid = createStandardAction("SESSION_INVALID")();
 
+export const cieIdUrlAction = createStandardAction("CIE_ID_URL")<
+  string | undefined
+>();
+
 export type AuthenticationActions =
   | ActionType<typeof idpSelected>
   | ActionType<typeof idpLoginUrlChanged>
@@ -110,4 +114,5 @@ export type AuthenticationActions =
   | ActionType<typeof sessionInvalid>
   | ActionType<typeof resetAuthenticationState>
   | ActionType<typeof loadSupportToken>
-  | ActionType<typeof disableNativeAuthentication>;
+  | ActionType<typeof disableNativeAuthentication>
+  | ActionType<typeof cieIdUrlAction>;

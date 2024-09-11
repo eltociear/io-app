@@ -69,6 +69,7 @@ export function* authenticationSaga(): Generator<
   // FIXME: what's the difference between AUTHENTICATION_COMPLETED and
   //        LOGIN_SUCCESS?
   yield* put(analyticsAuthenticationCompleted());
+  console.log("✅ authenticationSaga completed");
 
   return action.payload.token;
 }

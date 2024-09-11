@@ -1,6 +1,8 @@
 import * as pot from "@pagopa/ts-commons/lib/pot";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import * as T from "fp-ts/lib/Task";
 import React, { useCallback, useMemo, useState, useEffect, memo } from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
@@ -41,7 +43,7 @@ import {
   assistanceToolRemoteConfig,
   handleSendAssistanceLog
 } from "../../utils/supportAssistance";
-import { getUrlBasepath } from "../../utils/url";
+import { getUrlBasepath, openWebUrl } from "../../utils/url";
 import { IdpData } from "../../../definitions/content/IdpData";
 import { trackSpidLoginError } from "../../utils/analytics";
 import { apiUrlPrefix } from "../../config";
@@ -53,6 +55,9 @@ import {
   useHeaderSecondLevel
 } from "../../hooks/useHeaderSecondLevel";
 import { useIODispatch, useIOSelector } from "../../store/hooks";
+import { lollipopKeyTagSelector } from "../../features/lollipop/store/reducers/lollipop";
+import { isFastLoginEnabledSelector } from "../../features/fastLogin/store/selectors";
+import { regenerateKeyGetRedirectsAndVerifySaml } from "../../features/lollipop/utils/login";
 import { originSchemasWhiteList } from "./originSchemasWhiteList";
 
 enum ErrorType {
@@ -274,6 +279,36 @@ const IdpLoginScreen = () => {
     }
   }, [navigateToAuthErrorScreen, requestState]);
 
+  const maybeKeyTag = useIOSelector(lollipopKeyTagSelector);
+  const isFastLogin = useIOSelector(isFastLoginEnabledSelector);
+
+  const myRef = React.useRef(false);
+  useEffect(() => {
+    if (webviewSource && !myRef.current && "uri" in webviewSource) {
+      if (loginUri && O.isSome(maybeKeyTag)) {
+        void pipe(
+          () =>
+            regenerateKeyGetRedirectsAndVerifySaml(
+              loginUri,
+              maybeKeyTag.value,
+              true,
+              isFastLogin,
+              dispatch
+            ),
+          TE.fold(
+            () => T.of(openWebUrl(loginUri)),
+            url => {
+              console.log(`🚀 Opening loginUri ${loginUri} through ${url}`);
+              return T.of(openWebUrl(url));
+            }
+          )
+        )();
+      }
+      // eslint-disable-next-line functional/immutable-data
+      myRef.current = true;
+    }
+  }, [dispatch, isFastLogin, loginUri, maybeKeyTag, webviewSource]);
+
   const contextualHelp = useMemo(() => {
     if (O.isNone(selectedIdpTextData)) {
       return {
@@ -354,7 +389,7 @@ const IdpLoginScreen = () => {
 
   return (
     <View style={styles.webViewWrapper}>
-      {!hasError && content}
+      {/* {!hasError && content} */}
       {renderMask()}
     </View>
   );

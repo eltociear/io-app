@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createRef, useEffect } from "react";
-import { View, Platform, StyleSheet } from "react-native";
+import { View, Platform, StyleSheet, Linking } from "react-native";
 import WebView from "react-native-webview";
 import {
   WebViewErrorEvent,
@@ -32,6 +32,15 @@ import { isCieLoginUatEnabledSelector } from "../../features/cieLogin/store/sele
 import { cieFlowForDevServerEnabled } from "../../features/cieLogin/utils";
 import { selectedIdentityProviderSelector } from "../../store/reducers/authentication";
 import { OperationResultScreenContent } from "../screens/OperationResultScreenContent";
+import {
+  cieIdUrlAction,
+  loginSuccess
+} from "../../store/actions/authentication";
+import { cieIdUrlSelector } from "../../store/reducers/testLogin";
+import { SessionToken } from "../../types/SessionToken";
+import { IdpData } from "../../../definitions/content/IdpData";
+import { originSchemasWhiteList } from "../../screens/authentication/originSchemasWhiteList";
+import IntentModule from "../../IntentModule";
 
 const styles = StyleSheet.create({
   errorContainer: {
@@ -145,7 +154,7 @@ const CieWebView = (props: Props) => {
 
   const useCieUat = useIOSelector(isCieLoginUatEnabledSelector);
   const CIE_IDP_ID = useCieUat ? CieEntityIds.DEV : CieEntityIds.PROD;
-  const loginUri = getIdpLoginUri(CIE_IDP_ID, 3);
+  const loginUri = getIdpLoginUri(CIE_IDP_ID, 2);
 
   const mixpanelEnabled = useIOSelector(isMixpanelEnabled);
   const dispatch = useIODispatch();
@@ -157,10 +166,24 @@ const CieWebView = (props: Props) => {
   const webView = createRef<WebView>();
   const { onSuccess } = props;
 
+  const myCallback = (url: string) => {
+    console.log("🚨 myCallback", url);
+  };
+
+  const cieIdUrl = useIOSelector(cieIdUrlSelector);
+  console.log("🫶 cieIdUrl", cieIdUrl);
+
+  useEffect(() => {
+    if (cieIdUrl && cieIdUrl.length > 0) {
+      console.log("👋 cieIdUrl", cieIdUrl);
+    }
+  }, [cieIdUrl]);
+
   const handleOnError = React.useCallback(
     (
       e: Error | LoginUtilsError | WebViewErrorEvent | WebViewHttpErrorEvent
     ) => {
+      console.error("🫠 CieWebView error");
       trackSpidLoginError("cie", e);
       setInternalState(state => generateErrorState(state));
     },
@@ -169,7 +192,7 @@ const CieWebView = (props: Props) => {
 
   useEffect(() => {
     if (internalState.authUrl !== undefined) {
-      onSuccess(internalState.authUrl);
+      // onSuccess(internalState.authUrl);
       // reset the state when authUrl has been found
       setInternalState(generateResetState());
     }
@@ -184,6 +207,22 @@ const CieWebView = (props: Props) => {
 
     const url = event.url;
 
+    if (url.indexOf("token=") !== -1) {
+      console.log("🔐 Login token extracted", url);
+      const token = url.split("token=")[1] as SessionToken;
+      const idp = "cieid" as keyof IdpData;
+      if (token) {
+        console.log("🔐 Login token extracted", token);
+        dispatch(loginSuccess({ token, idp }));
+        setInternalState(state => generateFoundAuthUrlState(url, state));
+        setTimeout(() => {
+          onSuccess(url);
+        }, 500);
+      }
+      // setInternalState(state => generateFoundAuthUrlState(url, state));
+      return true;
+    }
+
     // on iOS when authnRequestString is present in the url, it means we have all stuffs to go on.
     if (
       url !== undefined &&
@@ -197,13 +236,32 @@ const CieWebView = (props: Props) => {
       return false;
     }
 
-    // Once the returned url contains the "OpenApp" string, then the authorization has been given
-    if (url && url.indexOf("OpenApp") !== -1) {
-      setInternalState(state => generateFoundAuthUrlState(url, state));
+    if (url.indexOf("livello2") >= 0 && url.indexOf("livello2mobile") === -1) {
+      console.log("url 🚀", url, url.indexOf("livello2"));
+      if (Platform.OS === "ios") {
+        const newUrl = `CIEID://${url}&sourceApp=iologincie`;
+        console.log("url 👀", url, newUrl);
+        Linking.openURL(newUrl).catch(err =>
+          console.error(
+            "💥💥 (App CieID not installed?) An error occurred",
+            err
+          )
+        );
+      } else {
+        IntentModule.launchStartActivityForResult(
+          "foo",
+          url,
+          (continueUrl: string) => {
+            console.log("🚨 returnUrl", continueUrl);
+            dispatch(cieIdUrlAction(continueUrl));
+          }
+        );
+      }
       return false;
     }
 
-    if (cieFlowForDevServerEnabled && url.indexOf("token=") !== -1) {
+    // Once the returned url contains the "OpenApp" string, then the authorization has been given
+    if (url && url.indexOf("OpenApp") !== -1) {
       setInternalState(state => generateFoundAuthUrlState(url, state));
       return false;
     }
@@ -219,6 +277,7 @@ const CieWebView = (props: Props) => {
       // we are presented with an error page titled "ERROR".
       eventTitle === "errore"
     ) {
+      console.log("💥 Error in CieWebView", e);
       handleOnError(new Error(eventTitle));
     }
     // inject JS on every page load end
@@ -231,6 +290,7 @@ const CieWebView = (props: Props) => {
     return (
       <ErrorComponent
         onRetry={() => {
+          dispatch(cieIdUrlAction(""));
           retryRequest(setInternalState, setRequestInfo);
         }}
         onClose={props.onClose}
@@ -259,7 +319,10 @@ const CieWebView = (props: Props) => {
           )
       ),
       TE.fold(
-        e => T.of(handleOnError(e)),
+        e => {
+          console.log("🔥 Error in CieWebView", e);
+          return T.of(handleOnError(e));
+        },
         url =>
           T.of(
             setRequestInfo({
@@ -282,12 +345,25 @@ const CieWebView = (props: Props) => {
             ref={webView}
             userAgent={defaultUserAgent}
             javaScriptEnabled={true}
+            originWhitelist={originSchemasWhiteList}
             injectedJavaScript={injectJs}
             onLoadEnd={handleOnLoadEnd}
-            onError={handleOnError}
-            onHttpError={handleOnError}
+            onError={(event: WebViewErrorEvent) => {
+              console.error("😩 CieWebView error");
+              handleOnError(event);
+            }}
+            onHttpError={(event: WebViewHttpErrorEvent) => {
+              const url = event.nativeEvent.url;
+              if (url.indexOf("livello2mobile") < 0) {
+                console.error("😱 CieWebView error", url);
+                handleOnError(event);
+              }
+            }}
+            onNavigationStateChange={(event: WebViewNavigation) => {
+              console.log("🚀 CieWebView navigation state change", event.url);
+            }}
             onShouldStartLoadWithRequest={handleOnShouldStartLoadWithRequest}
-            source={{ uri: requestInfo.url } as WebViewSource}
+            source={{ uri: cieIdUrl || requestInfo.url } as WebViewSource}
             key={internalState.key}
           />
         )}
@@ -296,8 +372,8 @@ const CieWebView = (props: Props) => {
 
   return (
     <WithLoading
-      isLoading={!cieFlowForDevServerEnabled}
-      loadingOpacity={1.0}
+      isLoading={cieIdUrl === undefined || cieIdUrl.length === 0}
+      loadingOpacity={0.1}
       loadingCaption={I18n.t("global.genericWaiting")}
       onCancel={props.onClose}
     />

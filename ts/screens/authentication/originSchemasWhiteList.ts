@@ -5,5 +5,6 @@ export const originSchemasWhiteList = [
   "https://*",
   "intent://*",
   "iologin://*",
+  "iologincie://*",
   ...(isDevEnv ? ["http://*"] : [])
 ];

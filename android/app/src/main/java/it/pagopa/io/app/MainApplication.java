@@ -38,6 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           packages.add(new CiePackage());
           packages.add(new ARTPackage());
+          packages.add(new MyAppPackage());
           return packages;
         }
 

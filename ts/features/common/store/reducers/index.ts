@@ -4,6 +4,7 @@ import { PersistConfig, PersistPartial, persistReducer } from "redux-persist";
 import { Action } from "../../../../store/actions/types";
 import {
   TestLoginState,
+  cieIdUrlReducer,
   testLoginReducer
 } from "../../../../store/reducers/testLogin";
 import {
@@ -49,6 +50,7 @@ type LoginFeaturesState = {
   testLogin: TestLoginState;
   nativeLogin: NativeLoginState;
   fastLogin: FastLoginState;
+  cieIdUrl: string | undefined;
   cieLogin: CieLoginState & PersistPartial;
 };
 
@@ -80,6 +82,7 @@ const rootReducer = combineReducers<FeaturesState, Action>({
   loginFeatures: combineReducers<LoginFeaturesState, Action>({
     testLogin: testLoginReducer,
     nativeLogin: nativeLoginReducer,
+    cieIdUrl: cieIdUrlReducer,
     fastLogin: fastLoginReducer,
     cieLogin: cieLoginPersistor
   }),

@@ -1,6 +1,7 @@
 import { getType } from "typesafe-actions";
 import { Action } from "../actions/types";
 import {
+  cieIdUrlAction,
   loginFailure,
   loginSuccess,
   testLoginCleanUp,
@@ -33,6 +34,20 @@ export type TestLoginState =
 
 export const testLoginSelector = (state: GlobalState): TestLoginState =>
   state.features.loginFeatures.testLogin;
+
+export const cieIdUrlSelector = (state: GlobalState): string | undefined =>
+  state.features.loginFeatures.cieIdUrl;
+
+export const cieIdUrlReducer = (
+  state: string | undefined = "",
+  action: Action
+): string | undefined => {
+  switch (action.type) {
+    case getType(cieIdUrlAction):
+      return action.payload;
+  }
+  return state;
+};
 
 export const testLoginReducer = (
   state: TestLoginState = { kind: "idle" },

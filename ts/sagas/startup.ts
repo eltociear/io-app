@@ -298,6 +298,8 @@ export function* initializeApplicationSaga(
     return;
   }
 
+  console.log("🚀 Application initialized 001");
+
   // Now we fork the tasks that will handle the async requests coming from the
   // UI of the application.
   // Note that the following sagas will be automatically cancelled each time
@@ -375,6 +377,8 @@ export function* initializeApplicationSaga(
   if (!isAssertionRefValid) {
     return;
   }
+
+  console.log("🚀 Application initialized 002");
 
   // Start watching for profile update requests as the checkProfileEnabledSaga
   // may need to update the profile.

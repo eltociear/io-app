@@ -50,7 +50,10 @@ import I18n from "../../../i18n";
 import { IOStackNavigationProp } from "../../../navigation/params/AppParamsList";
 import { AuthenticationParamsList } from "../../../navigation/params/AuthenticationParamsList";
 import ROUTES from "../../../navigation/routes";
-import { loginSuccess } from "../../../store/actions/authentication";
+import {
+  cieIdUrlAction,
+  loginSuccess
+} from "../../../store/actions/authentication";
 import { nfcIsEnabled } from "../../../store/actions/cie";
 import { useIODispatch, useIOSelector } from "../../../store/hooks";
 import { SessionToken } from "../../../types/SessionToken";
@@ -80,6 +83,10 @@ const CiePinScreen = () => {
   });
 
   const dispatch = useIODispatch();
+
+  useEffect(() => {
+    dispatch(cieIdUrlAction(""));
+  }, [dispatch]);
 
   const requestNfcEnabledCheck = useCallback(
     () => dispatch(nfcIsEnabled.request()),
@@ -139,9 +146,8 @@ const CiePinScreen = () => {
         });
       } else {
         if (isNfcEnabled) {
-          navigation.navigate(ROUTES.CIE_CARD_READER_SCREEN, {
-            ciePin: pin,
-            authorizationUri: authUrlGenerated
+          navigation.navigate(ROUTES.CIE_CONSENT_DATA_USAGE, {
+            cieConsentUri: authUrlGenerated
           });
         } else {
           navigation.navigate(ROUTES.CIE_ACTIVATE_NFC_SCREEN, {
@@ -167,12 +173,13 @@ const CiePinScreen = () => {
     showAnimatedModal(
       <CieRequestAuthenticationOverlay
         onClose={handleAuthenticationOverlayOnClose}
-        onSuccess={setAuthUrlGenerated}
+        onSuccess={hideModal}
       />,
       BottomTopAnimation
     );
   }, [
     handleAuthenticationOverlayOnClose,
+    hideModal,
     requestNfcEnabledCheck,
     showAnimatedModal
   ]);
